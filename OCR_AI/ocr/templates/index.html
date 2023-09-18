@@ -8,24 +8,20 @@
         <a id="logo" href="#">Advance AI Project</a>
       </header>
       <header class="hero-header">
-        <h1 class="hero-title">Idhar Title Daalo</h1>
+        <h1 class="hero-title">OCR - Invoice</h1>
       </header>
       <footer class="hero-footer"></footer>
     </section>
     <article>
-      <div class="leftContainer">
-        <div class="wrap">
-            <button class="button">Submit</button>
-          </div>
-      </div>
+      <h1>Upload a PDF for OCR</h1>
+    <form method="POST" enctype="multipart/form-data" action="{% url 'perform-ocr' %}">
+        {% csrf_token %}
+        <input type="file" name="pdf_file" accept=".pdf">
+        <button type="submit">Perform OCR</button>
+    </form>
+    <div id="results"></div>
       <div class="rightContainer">
-        <h2>Some additional content</h2>
-        <p>
-          Laoreet fusce condimentum venenatis quisque imperdiet ornare cras
-          faucibus convallis, pharetra habitasse elementum ut bibendum per
-          sociosqu phasellus etiam, velit faucibus integer torquent leo
-          elementum maecenas netus.
-        </p>
+        <div id="results"></div>
       </div>
     </article>
     <style>
@@ -141,5 +137,28 @@
       }
 
     </style>
+<script>
+  // Simple AJAX request to display the OCR results
+  const form = document.querySelector('form');
+  const resultsDiv = document.querySelector('#results');
+
+  form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+          const results = data.extracted_text.split('\n').join('<br>');
+          resultsDiv.innerHTML = `<h2>Extracted Text:</h2>${results}`;
+      })
+      .catch(error => {
+          resultsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+      });
+  });
+</script>
   </body>
 </html>
