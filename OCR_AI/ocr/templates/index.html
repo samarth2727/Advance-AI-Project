@@ -13,27 +13,33 @@
       <footer class="hero-footer"></footer>
     </section>
     <article>
-      <h1>Upload a PDF for OCR</h1>
-    <form method="POST" enctype="multipart/form-data" action="{% url 'perform-ocr' %}">
-        {% csrf_token %}
-        <input type="file" name="pdf_file" accept=".pdf">
-        <button type="submit">Perform OCR</button>
-    </form>
-    <div id="results"></div>
+      <div class="leftContainer">
+        <h1>Upload a PDF for OCR</h1>
+        <form
+          method="POST"
+          enctype="multipart/form-data"
+          action="{% url 'perform-ocr' %}"
+        >
+          {% csrf_token %}
+          <input type="file" name="pdf_file" accept=".pdf" />
+          <button class="button" type="submit">Perform OCR</button>
+        </form>
+      </div>
       <div class="rightContainer">
-        <div id="results"></div>
+        <div class="results">
+          <div class="results-content" id="results"></div>
+        </div>
       </div>
     </article>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
+        font-family: "Poppins", sans-serif;
       }
       body {
-
         font-size: 3vh;
       }
 
@@ -76,7 +82,7 @@
         font-weight: bold;
         line-height: 0.9;
       }
-      article{
+      article {
         width: 100%;
         display: flex;
         justify-content: space-between;
@@ -85,18 +91,50 @@
         background: rgb(143, 113, 196);
         color: #fff;
       }
-      article .leftContainer{
-        flex-basis: 30%;
+      article .leftContainer {
+        flex-basis: 40%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        padding: 20px;
+      }
+      article .leftContainer form {
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
+        height: auto;
       }
-      article .rightContainer{
+      article .leftContainer form input {
+        padding: 10px;
+        font-size: 1rem;
+        width: 16vw;
+      }
+
+      article .rightContainer {
         flex-basis: 70%;
         display: flex;
+        justify-content: center;
         flex-direction: column;
-        align-items: start;
+        align-items: center;
+        border-radius: 25px;
         gap: 30px;
+        padding: 10px;
+      }
+      .results {
+        background: #fff;
+        color: #000;
+        width: 70%;
+        height: 80vh;
+        overflow: hidden;
+        border-radius: 25px;
+        padding: 10px;
+      }
+      .results .results-content {
+        height: 100%;
+        overflow-y: scroll;
       }
 
       @media only screen and (min-width: 32em) {
@@ -111,7 +149,7 @@
         align-items: center;
         justify-content: center;
       }
-      
+
       .button {
         width: 200px;
         height: 80px;
@@ -127,38 +165,38 @@
         transition: all 0.3s ease 0s;
         cursor: pointer;
         outline: none;
-        }
-      
+        margin-top: 15px;
+      }
+
       .button:hover {
-        background-color: rgb(38,48,99);
+        background-color: rgb(38, 48, 99);
         box-shadow: 0px 15px 20px rgb(62, 12, 150);
         color: #fff;
         transform: translateY(-7px);
       }
-
     </style>
-<script>
-  // Simple AJAX request to display the OCR results
-  const form = document.querySelector('form');
-  const resultsDiv = document.querySelector('#results');
+    <script>
+      // Simple AJAX request to display the OCR results
+      const form = document.querySelector("form");
+      const resultsDiv = document.querySelector("#results");
 
-  form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
 
-      fetch(form.action, {
-          method: 'POST',
-          body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-          const results = data.extracted_text.split('\n').join('<br>');
-          resultsDiv.innerHTML = `<h2>Extracted Text:</h2>${results}`;
-      })
-      .catch(error => {
-          resultsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+        fetch(form.action, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const results = data.extracted_text.split("\n").join("<br>");
+            resultsDiv.innerHTML = `<h2>Extracted Text:</h2>${results}`;
+          })
+          .catch((error) => {
+            resultsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+          });
       });
-  });
-</script>
+    </script>
   </body>
 </html>
